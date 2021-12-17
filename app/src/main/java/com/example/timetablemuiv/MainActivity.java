@@ -32,6 +32,12 @@ import retrofit2.Response;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +92,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.e("ФФФФФФФФФФФФФФФФФФФФФФФФФФФФФФФ",longDidderence + "");
         longDidderence = longDidderence / (1000 * 60 * 60 * 24 * 7);
         Log.e("ФФФФФФФФФФФФФФФФФФФФФФФФФФФФФФФ",longDidderence + "");
-        id = (int)longDidderence + 2;
+        id = (int)longDidderence + 1;
+
+
+
+
+
 
         if(preid1!=null) {
             preid = "117";
@@ -98,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             preid = preid + String.valueOf(preid2);
             preid = preid + String.valueOf(preid3);
         }
+
+
+
+
+
+
+
+
+
+
+
+
         Log.e("ЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙ",preid + "");
         String container = preid + id;
         id = Integer.parseInt(container);
@@ -217,6 +240,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             ActivityCurrentTimetable.post2 = post;
                             ActivityWeekTimetable.post3 = post;
                             post3 = post;
+                            //________________________________________________________________________________
+                            //Спинер
+                            for (int i = 0; i < 15; i++) {
+                                if (i < post3.getGroup().size()) {
+                                    groupName[i]=post3.getGroup().get(i).getGroupName();
+                                    groupSize=i;
+                                }
+
+
+                            }
+                            final Spinner spinner = findViewById(R.id.spinnerGroup);
+                            List<String> groups = new ArrayList<String>();
+                            for (int i = 0; i < 15; i++) {
+                                if (groupName[i]!=null) {
+                                    groups.add(groupName[i]);
+                                }
+                            }
+                            groups.add("Все");
+
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_item, groups);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinner.setAdapter(adapter);
+
+                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                public void onItemSelected(AdapterView<?> parent,
+                                                           View itemSelected, int selectedItemPosition, long selectedId) {
+
+
+                                    if (selectedItemPosition>groupSize){
+                                        spinnerContent=99;
+                                    }
+                                    else
+                                    {
+                                        spinnerContent = selectedItemPosition;
+                                    }
+                                    ActivityCurrentTimetable.spinnerContent=spinnerContent;
+                                    ActivityWeekTimetable.spinnerContent=spinnerContent;
+                                }
+                                public void onNothingSelected(AdapterView<?> parent) {
+                                }
+                            });
+
+
+
+
+
+
                         } else {
                             String text = response.errorBody().source() + "";
                             text = text.substring(1, text.length() - 1);
@@ -227,9 +298,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
 
-                        //    textView.append(post.getUserId() + "\n");
-                        //   textView.append(post.getTitle() + "\n");
-                        //  textView.append(post.getBody() + "\n");
                     }
 
                     @Override
@@ -241,54 +309,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         t.printStackTrace();
                     }
                 });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                for (int i = 0; i < 15; i++) {
-                    if (i < post3.getGroup().size()) {
-                        groupName[i]=post3.getGroup().get(i).getGroupName();
-                        groupSize=i;
-                    }
 
 
-                }
-                final Spinner spinner = findViewById(R.id.spinnerGroup);
-                List<String> groups = new ArrayList<String>();
-                for (int i = 0; i < 15; i++) {
-                 if (groupName[i]!=null) {
-                            groups.add(groupName[i]);
-                    }
-                 }
-                groups.add("Все");
-
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_item, groups);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
-
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent,
-                                               View itemSelected, int selectedItemPosition, long selectedId) {
-
-                        spinnerContent = selectedItemPosition;
-                        if (selectedItemPosition>groupSize){
-                            spinnerContent=99;
-                        }
-                        else
-                        {
-                            spinnerContent = selectedItemPosition;
-                        }
-                        ActivityCurrentTimetable.spinnerContent=spinnerContent;
-                        ActivityWeekTimetable.spinnerContent=spinnerContent;
-                    }
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
-            }
-
-                // yourMethod();
-
-        }, 700);   //5 seconds
     }
 
 
